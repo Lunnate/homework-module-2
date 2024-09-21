@@ -1,0 +1,28 @@
+version: '3'
+services:
+  api:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - database
+    networks:
+      - front-back
+  database:
+    image: mysql:5.7
+    ports:
+      - "8080:3306"
+    volumes:
+      - ./init.sql:/data/application/init.sql
+      - ./db:/var/lib/mysql
+    command: mysqld --init-file /data/application/init.sql
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    networks:
+      - front-back
+
+networks:
+  front-back:
+    driver: bridge
